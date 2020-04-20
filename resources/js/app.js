@@ -8,6 +8,13 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import Vuetify from 'vuetify';
+import { rtdbPlugin } from 'vuefire'
+
+Vue.use(Vuetify);
+Vue.use(rtdbPlugin);
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -20,6 +27,9 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('nav-bar-component', require('./components/NavBarComponent.vue').default);
+Vue.component('btn-validate-component', require('./components/BtnVaidateComponent.vue').default);
+Vue.component('drag-opt-component', require('./components/DragOptComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,4 +39,5 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    vuetify: new Vuetify(),
 });

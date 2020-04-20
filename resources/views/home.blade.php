@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container">
+    {{-- <example-component></example-component> --}}
+    {{-- <nav-bar-component title="{{ config('app.name', 'Laravel') }}" name="{{ Auth::user()->name }}"></nav-bar-component> --}}
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -13,8 +15,10 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
                     You are logged in!
+                    <btn-validate-component></btn-validate-component>
+
+
                 </div>
             </div>
         </div>
