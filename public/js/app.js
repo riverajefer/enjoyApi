@@ -20401,9 +20401,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+ // it :smile😂 💪
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["operations"],
+  name: "DragOpt",
   order: 2,
   components: {
     draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_0___default.a
@@ -20412,47 +20444,44 @@ __webpack_require__.r(__webpack_exports__);
     this.opt = JSON.parse(this.operations);
     var arr = [];
 
-    while (arr.length < 8) {
+    while (arr.length < 5) {
       var r = Math.floor(Math.random() * 20) + 1;
       if (arr.indexOf(r) === -1) arr.push(r);
     }
 
     this.list1 = arr;
+    console.log("val1 :", this.opt[0].val1);
+    var val1 = this.opt[0].val1;
+    var val2 = this.opt[0].val2;
+    var result = val1 + val2;
+    this.list1.indexOf(result) === -1 ? (this.list1.pop(), this.list1.push(result)) : console.log("This item already exists");
+    this.list1.sort(function () {
+      return Math.random() - 0.5;
+    });
   },
   data: function data() {
     return {
       opt: this.opt,
       list1: [],
       resul: [],
-      respuesta: 0
+      response_user: 0
     };
   },
-  computed: {},
-  created: function created() {},
   methods: {
     onAdd: function onAdd(evt) {
       console.log("evt_add", evt);
-    },
-    add: function add() {
-      console.log("Add");
-      this.list.push({
-        name: "Juan"
-      });
     },
     onEnd: function onEnd(evt) {
       console.log("onEnd", evt);
       var area_id = evt.to["id"]; // get id area
 
-      console.log("area_id: ", evt.to["id"]);
       console.log("val1: ", this.opt[0].val1);
       console.log("val2: ", this.opt[0].val2);
-      var value = Number(evt.to["textContent"]);
-      console.log("value_resul: ", value);
-      console.log("this.respuesta: ", this.respuesta);
+      console.log("this.respuesta: ", this.response_user);
       var resp = this.opt[0].val1 + this.opt[0].val2;
       console.log("resp ", resp);
 
-      if (this.respuesta !== resp) {
+      if (this.response_user !== resp) {
         this.resul.pop();
         return false;
       }
@@ -20470,7 +20499,7 @@ __webpack_require__.r(__webpack_exports__);
     log: function log(evt) {
       window.console.log(evt);
       console.log("evt.aadded", evt.added.element);
-      this.respuesta = evt.added.element;
+      this.response_user = evt.added.element;
     },
     checkMove: function checkMove(evt) {}
   }
@@ -25232,7 +25261,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.val[data-v-1ba1ae49] {\n  margin: 5px;\n  padding: 15px;\n  min-width: 100px;\n  min-height: 100px;\n  border: 1px dotted gray;\n  border-radius: 20px;\n}\n.list-group-item[data-v-1ba1ae49] {\n  background-color: transparent;\n}\n", ""]);
+exports.push([module.i, "\n.val[data-v-1ba1ae49] {\n    width: 100px;\n    min-width: 100px;\n    height: 100px;\n    /* border: 1px solid gray; */\n    border-radius: 20px;\n    text-align: center;\n}\n.list-group-item[data-v-1ba1ae49] {\n    background-color: transparent;\n}\n.div_resul[data-v-1ba1ae49] {\n    border: 2px dashed gray !important;\n}\n.elm[data-v-1ba1ae49] {\n    text-align: center;\n    font-size: 70px;\n    font-weight: bold;\n    margin: 0;\n    padding-top: 0px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n}\n.plus[data-v-1ba1ae49] {\n    font-size: 80px;\n    color: #b4045f;\n}\n", ""]);
 
 // exports
 
@@ -61204,10 +61233,97 @@ var render = function() {
   return _c("div", { staticClass: "row" }, [
     _c(
       "div",
-      { staticClass: "col-3" },
+      { staticClass: "col-1" },
       [
-        _c("h3", [_vm._v("Lista")]),
-        _vm._v(" "),
+        _c(
+          "draggable",
+          {
+            staticClass: "dragArea val val1",
+            attrs: {
+              id: "vail1",
+              list: _vm.opt,
+              group: "people",
+              disabled: true
+            },
+            on: { change: _vm.log }
+          },
+          _vm._l(_vm.opt, function(element) {
+            return _c("div", { key: element.val1, staticClass: "elm" }, [
+              _vm._v(
+                "\n                " + _vm._s(element.val1) + "\n            "
+              )
+            ])
+          }),
+          0
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-1" },
+      [
+        _c(
+          "draggable",
+          {
+            staticClass: "dragArea val",
+            attrs: {
+              id: "vail2",
+              list: _vm.opt,
+              group: "people",
+              disabled: true
+            },
+            on: { change: _vm.log }
+          },
+          _vm._l(_vm.opt, function(element) {
+            return _c("div", { key: element.name, staticClass: "elm" }, [
+              _vm._v(
+                "\n                " + _vm._s(element.val2) + "\n            "
+              )
+            ])
+          }),
+          0
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm._m(1),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-2" },
+      [
+        _c(
+          "draggable",
+          {
+            staticClass: "dragArea val div_resul",
+            attrs: { id: "resul", list: _vm.resul, group: "people" },
+            on: {
+              added: function($event) {
+                return _vm.onAdd()
+              },
+              change: _vm.log
+            }
+          },
+          _vm._l(_vm.resul, function(element) {
+            return _c("div", { key: element, staticClass: "elm" }, [
+              _vm._v("\n                " + _vm._s(element) + "\n            ")
+            ])
+          }),
+          0
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-6" },
+      [
         _c(
           "draggable",
           {
@@ -61221,102 +61337,38 @@ var render = function() {
           },
           _vm._l(_vm.list1, function(element) {
             return _c("div", { key: element, staticClass: "list-group-item" }, [
-              _vm._v(_vm._s(element))
+              _vm._v("\n                " + _vm._s(element) + "\n            ")
             ])
           }),
           0
         )
       ],
       1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-2" },
-      [
-        _c("h3", [_vm._v("Val1")]),
-        _vm._v(" "),
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea val val1",
-            attrs: { id: "vail1", list: _vm.opt, group: "people" },
-            on: { change: _vm.log }
-          },
-          _vm._l(_vm.opt, function(element) {
-            return _c(
-              "div",
-              { key: element.val1, staticClass: "list-group-item" },
-              [_vm._v(_vm._s(element.val1))]
-            )
-          }),
-          0
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-2" },
-      [
-        _c("h3", [_vm._v("Val2")]),
-        _vm._v(" "),
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea val",
-            attrs: { id: "vail2", list: _vm.opt, group: "people" },
-            on: { change: _vm.log }
-          },
-          _vm._l(_vm.opt, function(element) {
-            return _c(
-              "div",
-              { key: element.name, staticClass: "list-group-item" },
-              [_vm._v(_vm._s(element.val2))]
-            )
-          }),
-          0
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-2" },
-      [
-        _c("h3", [_vm._v("Resul")]),
-        _vm._v(" "),
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea val resul",
-            attrs: { id: "resul", list: _vm.resul, group: "people" },
-            on: {
-              added: function($event) {
-                return _vm.onAdd()
-              },
-              change: _vm.log
-            }
-          },
-          _vm._l(_vm.resul, function(element) {
-            return _c("div", { key: element, staticClass: "list-group-item" }, [
-              _vm._v(_vm._s(element))
-            ])
-          }),
-          0
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("p", [_vm._v(_vm._s(_vm.list1))]),
-    _vm._v(" "),
-    _c("p", [_vm._v("resul: " + _vm._s(_vm.resul))])
+    )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-1" }, [
+      _c("div", { staticClass: "elm plus" }, [
+        _vm._v("\n            +\n        ")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-1" }, [
+      _c("div", { staticClass: "elm plus" }, [
+        _vm._v("\n            =\n        ")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
