@@ -20431,6 +20431,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  // it :smile😂 💪
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -20443,6 +20486,9 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.opt = JSON.parse(this.operations);
     var arr = [];
+    this.value1 = this.opt[0].val1;
+    this.value2 = this.opt[0].val2;
+    var result = this.value1 + this.value2;
 
     while (arr.length < 5) {
       var r = Math.floor(Math.random() * 20) + 1;
@@ -20450,10 +20496,6 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     this.list1 = arr;
-    console.log("val1 :", this.opt[0].val1);
-    var val1 = this.opt[0].val1;
-    var val2 = this.opt[0].val2;
-    var result = val1 + val2;
     this.list1.indexOf(result) === -1 ? (this.list1.pop(), this.list1.push(result)) : console.log("This item already exists");
     this.list1.sort(function () {
       return Math.random() - 0.5;
@@ -20464,46 +20506,74 @@ __webpack_require__.r(__webpack_exports__);
       opt: this.opt,
       list1: [],
       resul: [],
-      response_user: 0
+      value1: 0,
+      value2: 0,
+      response_user: 0,
+      dialog: false,
+      colors_numbers: ["#DF3A01", "#5FB404", "#FFBF00", "#045FB4", "#FF8000"]
     };
   },
+  created: function created() {},
   methods: {
-    onAdd: function onAdd(evt) {
-      console.log("evt_add", evt);
+    speakResponse: function speakResponse() {
+      console.log("speakResponse ");
+      this.speak("Muy bien !");
+      this.speak(" ");
+      var text = "".concat(this.value1, " + ").concat(this.value2, " = ").concat(this.value1 + this.value2);
+      this.speak(text);
+      /* this.speak(this.value1);
+      this.speak("+");
+      this.speak(this.value2);
+      this.speak("= a");
+      this.speak(this.value1 + this.value2);
+       Cuando inicia (Start) a decir cada palabra se aumenta el tamaño del numero
+      cuando termina (End) vuelve al original
+      */
     },
-    onEnd: function onEnd(evt) {
-      console.log("onEnd", evt);
-      var area_id = evt.to["id"]; // get id area
+    speak: function speak(msg) {
+      var _msg = new SpeechSynthesisUtterance(msg);
 
-      console.log("val1: ", this.opt[0].val1);
-      console.log("val2: ", this.opt[0].val2);
-      console.log("this.respuesta: ", this.response_user);
-      var resp = this.opt[0].val1 + this.opt[0].val2;
-      console.log("resp ", resp);
+      _msg.rate = 1;
+      window.speechSynthesis.speak(_msg);
 
-      if (this.response_user !== resp) {
-        this.resul.pop();
-        return false;
-      }
-    },
-    replace: function replace() {
-      this.list = [{
-        name: "Edgard"
-      }];
-    },
-    clone: function clone(el) {
-      return {
-        name: el.name + " cloned"
+      _msg.onpause = function () {
+        console.log("pause de hablar");
+      };
+
+      _msg.onend = function () {
+        console.log("termino de hablar");
       };
     },
+    onEnd: function onEnd(evt) {},
     log: function log(evt) {
       window.console.log(evt);
-      console.log("evt.aadded", evt.added.element);
-      this.response_user = evt.added.element;
+
+      if (evt.added !== undefined) {
+        this.response_user = evt.added.element;
+        var resp_correct = this.value1 + this.value2;
+
+        if (this.response_user !== resp_correct) {
+          this.resul.pop();
+          this.dialog = true;
+          return false;
+        } else {
+          console.log("Respuesta correcta !");
+          this.speakResponse();
+        }
+      }
     },
     checkMove: function checkMove(evt) {}
   }
 });
+/*
+TODO:
+pendiente
+* voces sync con numeros
+* Estilos Dialog
+* Respuesta correcta nueva operacion
+* Intentos
+* Vidas en cero, envío evento a firebase
+*/
 
 /***/ }),
 
@@ -25261,7 +25331,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.val[data-v-1ba1ae49] {\n    width: 100px;\n    min-width: 100px;\n    height: 100px;\n    /* border: 1px solid gray; */\n    border-radius: 20px;\n    text-align: center;\n}\n.list-group-item[data-v-1ba1ae49] {\n    background-color: transparent;\n}\n.div_resul[data-v-1ba1ae49] {\n    border: 2px dashed gray !important;\n}\n.elm[data-v-1ba1ae49] {\n    text-align: center;\n    font-size: 70px;\n    font-weight: bold;\n    margin: 0;\n    padding-top: 0px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n}\n.plus[data-v-1ba1ae49] {\n    font-size: 80px;\n    color: #b4045f;\n}\n", ""]);
+exports.push([module.i, "\n.div_opt[data-v-1ba1ae49] {\n    border: 3px solid #df01a5;\n    border-radius: 20px;\n    background-color: #f2f2f2;\n    width: 80%;\n    margin: 0 auto;\n    padding: 30px;\n}\n.val[data-v-1ba1ae49] {\n    height: 100px;\n    text-align: center;\n}\n.list-group-item[data-v-1ba1ae49] {\n    background-color: transparent;\n    display: block;\n}\n.div_resul[data-v-1ba1ae49] {\n    border: 2px dashed #ff0080;\n    width: 110px;\n    border-radius: 20px;\n}\n.elm[data-v-1ba1ae49] {\n    text-align: center;\n    font-size: 70px;\n    font-weight: bold;\n    margin: 0;\n    padding-top: 0px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n}\n.plus[data-v-1ba1ae49] {\n    font-size: 80px;\n    color: #b4045f;\n}\n.numbers_opt[data-v-1ba1ae49] {\n    text-align: center;\n    margin: 5px 15px;\n    width: 80px;\n    height: 80px;\n    font-size: 61px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n    font-weight: bold;\n    cursor: move;\n    border: none;\n    font-weight: bold;\n}\n.list-group[data-v-1ba1ae49] {\n    display: inline !important;\n}\n", ""]);
 
 // exports
 
@@ -61230,122 +61300,228 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c(
-      "div",
-      { staticClass: "col-1" },
-      [
+  return _c(
+    "div",
+    [
+      _c(
+        "div",
+        { staticClass: "div_opt" },
+        [
+          _c("div", { staticClass: "row" }, [
+            _c(
+              "div",
+              { staticClass: "col-1 col-sm-1 offset-md-3" },
+              [
+                _c(
+                  "draggable",
+                  {
+                    staticClass: "dragArea val val1",
+                    attrs: {
+                      id: "vail1",
+                      list: _vm.opt,
+                      group: "people",
+                      disabled: true
+                    },
+                    on: { change: _vm.log }
+                  },
+                  _vm._l(_vm.opt, function(element) {
+                    return _c(
+                      "div",
+                      { key: element.val1, staticClass: "elm" },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(element.val1) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col-1" },
+              [
+                _c(
+                  "draggable",
+                  {
+                    staticClass: "dragArea val",
+                    attrs: {
+                      id: "vail2",
+                      list: _vm.opt,
+                      group: "people",
+                      disabled: true
+                    },
+                    on: { change: _vm.log }
+                  },
+                  _vm._l(_vm.opt, function(element) {
+                    return _c(
+                      "div",
+                      { key: element.name, staticClass: "elm" },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(element.val2) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col-2" },
+              [
+                _c(
+                  "draggable",
+                  {
+                    staticClass: "dragArea val div_resul",
+                    attrs: { id: "resul", list: _vm.resul, group: "people" },
+                    on: { change: _vm.log }
+                  },
+                  _vm._l(_vm.resul, function(element) {
+                    return _c("div", { key: element, staticClass: "elm" }, [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(element) +
+                          "\n                    "
+                      )
+                    ])
+                  }),
+                  0
+                )
+              ],
+              1
+            )
+          ]),
+          _vm._v(" "),
+          _c("v-divider"),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c(
+              "div",
+              { staticClass: "col-9 offset-md-2" },
+              [
+                _c(
+                  "draggable",
+                  {
+                    staticClass: "dragArea list-group",
+                    attrs: {
+                      move: _vm.checkMove,
+                      list: _vm.list1,
+                      group: { name: "people", pull: "clone", put: false }
+                    },
+                    on: { change: _vm.log, end: _vm.onEnd }
+                  },
+                  _vm._l(_vm.list1, function(element, i) {
+                    return _c(
+                      "v-chip",
+                      {
+                        key: element,
+                        staticClass: "ma-2 numbers_opt",
+                        style: { color: _vm.colors_numbers[i] },
+                        attrs: { outlined: "" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(element) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  }),
+                  1
+                )
+              ],
+              1
+            )
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("v-app", { attrs: { id: "inspire" } }, [
         _c(
-          "draggable",
-          {
-            staticClass: "dragArea val val1",
-            attrs: {
-              id: "vail1",
-              list: _vm.opt,
-              group: "people",
-              disabled: true
-            },
-            on: { change: _vm.log }
-          },
-          _vm._l(_vm.opt, function(element) {
-            return _c("div", { key: element.val1, staticClass: "elm" }, [
-              _vm._v(
-                "\n                " + _vm._s(element.val1) + "\n            "
-              )
-            ])
-          }),
-          0
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-1" },
-      [
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea val",
-            attrs: {
-              id: "vail2",
-              list: _vm.opt,
-              group: "people",
-              disabled: true
-            },
-            on: { change: _vm.log }
-          },
-          _vm._l(_vm.opt, function(element) {
-            return _c("div", { key: element.name, staticClass: "elm" }, [
-              _vm._v(
-                "\n                " + _vm._s(element.val2) + "\n            "
-              )
-            ])
-          }),
-          0
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _vm._m(1),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-2" },
-      [
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea val div_resul",
-            attrs: { id: "resul", list: _vm.resul, group: "people" },
-            on: {
-              added: function($event) {
-                return _vm.onAdd()
+          "div",
+          { staticClass: "text-center" },
+          [
+            _c(
+              "v-dialog",
+              {
+                attrs: { width: "400" },
+                model: {
+                  value: _vm.dialog,
+                  callback: function($$v) {
+                    _vm.dialog = $$v
+                  },
+                  expression: "dialog"
+                }
               },
-              change: _vm.log
-            }
-          },
-          _vm._l(_vm.resul, function(element) {
-            return _c("div", { key: element, staticClass: "elm" }, [
-              _vm._v("\n                " + _vm._s(element) + "\n            ")
-            ])
-          }),
-          0
+              [
+                _c(
+                  "v-card",
+                  [
+                    _c("v-card-title", { staticClass: "headline" }, [
+                      _vm._v("Segura ?")
+                    ]),
+                    _vm._v(" "),
+                    _c("v-card-text", [
+                      _c("b", [_vm._v("Vuelve a intentarlo! ")]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(
+                        "\n                        Let Google help apps determine\n                        location. This means sending anonymous location data\n                        to Google, even when no apps are\n                        running."
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "v-card-actions",
+                      [
+                        _c("v-spacer"),
+                        _vm._v(" "),
+                        _c(
+                          "v-btn",
+                          {
+                            attrs: { color: "green darken-1", text: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.dialog = false
+                              }
+                            }
+                          },
+                          [_vm._v("OK")]
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
         )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-6" },
-      [
-        _c(
-          "draggable",
-          {
-            staticClass: "dragArea list-group",
-            attrs: {
-              move: _vm.checkMove,
-              list: _vm.list1,
-              group: { name: "people", pull: "clone", put: false }
-            },
-            on: { change: _vm.log, end: _vm.onEnd }
-          },
-          _vm._l(_vm.list1, function(element) {
-            return _c("div", { key: element, staticClass: "list-group-item" }, [
-              _vm._v("\n                " + _vm._s(element) + "\n            ")
-            ])
-          }),
-          0
-        )
-      ],
-      1
-    )
-  ])
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -61354,7 +61530,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-1" }, [
       _c("div", { staticClass: "elm plus" }, [
-        _vm._v("\n            +\n        ")
+        _vm._v("\n                    +\n                ")
       ])
     ])
   },
@@ -61364,7 +61540,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-1" }, [
       _c("div", { staticClass: "elm plus" }, [
-        _vm._v("\n            =\n        ")
+        _vm._v("\n                    =\n                ")
       ])
     ])
   }
