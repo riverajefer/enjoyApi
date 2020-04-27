@@ -20474,6 +20474,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
  // it :smile😂 💪
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -20484,51 +20525,55 @@ __webpack_require__.r(__webpack_exports__);
     draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   mounted: function mounted() {
-    this.opt = JSON.parse(this.operations);
-    var arr = [];
-    this.value1 = this.opt[0].val1;
-    this.value2 = this.opt[0].val2;
-    var result = this.value1 + this.value2;
-
-    while (arr.length < 5) {
-      var r = Math.floor(Math.random() * 20) + 1;
-      if (arr.indexOf(r) === -1) arr.push(r);
-    }
-
-    this.list1 = arr;
-    this.list1.indexOf(result) === -1 ? (this.list1.pop(), this.list1.push(result)) : console.log("This item already exists");
-    this.list1.sort(function () {
-      return Math.random() - 0.5;
-    });
+    var opt = JSON.parse(this.operations);
+    this.newOpt(opt);
   },
   data: function data() {
     return {
+      progress: 0,
+      quantity_opt: 2,
+      count_opt_response: 0,
       opt: this.opt,
       list1: [],
       resul: [],
       value1: 0,
       value2: 0,
+      level: 1,
+      levels: ["easy", "medium", "hard"],
+      lives: [1, 2, 3, 4, 5],
+      alert: false,
       response_user: 0,
       dialog: false,
-      colors_numbers: ["#DF3A01", "#5FB404", "#FFBF00", "#045FB4", "#FF8000"]
+      colors_numbers: ["#DF3A01", "#5FB404", "#FFBF00", "#045FB4", "#FF8000"],
+      back_images: ["fondo1.jpg", "fondo2.jpg", "fondo3.jpg"]
     };
   },
   created: function created() {},
   methods: {
+    newOpt: function newOpt(operation) {
+      this.opt = operation;
+      var arr = [];
+      this.value1 = this.opt[0].val1;
+      this.value2 = this.opt[0].val2;
+      var result = this.value1 + this.value2;
+
+      while (arr.length < 5) {
+        var r = Math.floor(Math.random() * 20) + 1;
+        if (arr.indexOf(r) === -1) arr.push(r);
+      }
+
+      this.list1 = arr;
+      this.list1.indexOf(result) === -1 ? (this.list1.pop(), this.list1.push(result)) : console.log("This item already exists");
+      this.list1.sort(function () {
+        return Math.random() - 0.5;
+      });
+    },
     speakResponse: function speakResponse() {
       console.log("speakResponse ");
       this.speak("Muy bien !");
       this.speak(" ");
       var text = "".concat(this.value1, " + ").concat(this.value2, " = ").concat(this.value1 + this.value2);
       this.speak(text);
-      /* this.speak(this.value1);
-      this.speak("+");
-      this.speak(this.value2);
-      this.speak("= a");
-      this.speak(this.value1 + this.value2);
-       Cuando inicia (Start) a decir cada palabra se aumenta el tamaño del numero
-      cuando termina (End) vuelve al original
-      */
     },
     speak: function speak(msg) {
       var _msg = new SpeechSynthesisUtterance(msg);
@@ -20546,6 +20591,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     onEnd: function onEnd(evt) {},
     log: function log(evt) {
+      var _this = this;
+
       window.console.log(evt);
 
       if (evt.added !== undefined) {
@@ -20555,12 +20602,39 @@ __webpack_require__.r(__webpack_exports__);
         if (this.response_user !== resp_correct) {
           this.resul.pop();
           this.dialog = true;
+          this.lives.pop();
           return false;
         } else {
           console.log("Respuesta correcta !");
+          this.alert = true;
           this.speakResponse();
+          this.count_opt_response++;
+          this.progress = this.count_opt_response * 100 / this.quantity_opt;
+          setTimeout(function () {
+            if (_this.progress >= 100) {
+              _this.level++;
+              _this.progress = 0;
+              _this.count_opt_response = 0;
+            }
+
+            _this.getNewOpt();
+          }, 4500);
         }
       }
+    },
+    getNewOpt: function getNewOpt() {
+      var _this2 = this;
+
+      var body = {
+        level: this.levels[this.level - 1]
+      };
+      axios.post("new_opt", body).then(function (response) {
+        console.log(response.data);
+        _this2.alert = false;
+        _this2.resul = [];
+
+        _this2.newOpt(response.data);
+      });
     },
     checkMove: function checkMove(evt) {}
   }
@@ -20568,11 +20642,10 @@ __webpack_require__.r(__webpack_exports__);
 /*
 TODO:
 pendiente
-* voces sync con numeros
-* Estilos Dialog
-* Respuesta correcta nueva operacion
-* Intentos
+* Vidas
 * Vidas en cero, envío evento a firebase
+* Cuando complete los 3 nivles  Ganador!
+
 */
 
 /***/ }),
@@ -25331,7 +25404,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.div_opt[data-v-1ba1ae49] {\n    border: 3px solid #df01a5;\n    border-radius: 20px;\n    background-color: #f2f2f2;\n    width: 80%;\n    margin: 0 auto;\n    padding: 30px;\n}\n.val[data-v-1ba1ae49] {\n    height: 100px;\n    text-align: center;\n}\n.list-group-item[data-v-1ba1ae49] {\n    background-color: transparent;\n    display: block;\n}\n.div_resul[data-v-1ba1ae49] {\n    border: 2px dashed #ff0080;\n    width: 110px;\n    border-radius: 20px;\n}\n.elm[data-v-1ba1ae49] {\n    text-align: center;\n    font-size: 70px;\n    font-weight: bold;\n    margin: 0;\n    padding-top: 0px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n}\n.plus[data-v-1ba1ae49] {\n    font-size: 80px;\n    color: #b4045f;\n}\n.numbers_opt[data-v-1ba1ae49] {\n    text-align: center;\n    margin: 5px 15px;\n    width: 80px;\n    height: 80px;\n    font-size: 61px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n    font-weight: bold;\n    cursor: move;\n    border: none;\n    font-weight: bold;\n}\n.list-group[data-v-1ba1ae49] {\n    display: inline !important;\n}\n", ""]);
+exports.push([module.i, "\n.theme--light.v-application[data-v-1ba1ae49] {\n    background: none !important;\n}\n.principal[data-v-1ba1ae49] {\n    width: 80%;\n    margin: 0 auto;\n}\n.div_opt[data-v-1ba1ae49] {\n    background-image: url(\"/images/fondo1.jpg\");\n    border: 3px solid #aeb404;\n    background-size: 100%;\n    border-radius: 20px;\n    margin: 0 auto;\n    padding: 30px;\n}\n.val[data-v-1ba1ae49] {\n    height: 100px;\n    text-align: center;\n}\n.list-group-item[data-v-1ba1ae49] {\n    background-color: transparent;\n    display: block;\n}\n.div_resul[data-v-1ba1ae49] {\n    border: 2px dashed #ff0080;\n    width: 110px;\n    border-radius: 20px;\n}\n.elm[data-v-1ba1ae49] {\n    text-align: center;\n    font-size: 70px;\n    font-weight: bold;\n    margin: 0;\n    padding-top: 0px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n    text-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;\n}\n.plus[data-v-1ba1ae49] {\n    font-size: 80px;\n    color: #b4045f;\n}\n.numbers_opt[data-v-1ba1ae49] {\n    text-align: center;\n    margin: 5px 15px;\n    width: 80px;\n    height: 80px;\n    font-size: 70px;\n    font-family: \"Mystery Quest\", cursive;\n    color: #8904b1;\n    text-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;\n    font-weight: bold;\n    cursor: move;\n    border: none;\n    font-weight: bold;\n}\n.list-group[data-v-1ba1ae49] {\n    display: inline !important;\n}\n.alert_ok[data-v-1ba1ae49] {\n    color: #f2f2f2;\n    font-weight: bold;\n    font-size: 10px;\n    padding: 0px 0px;\n}\n.lives_title[data-v-1ba1ae49] {\n    color: #f2f2f2;\n    font-weight: bold;\n    padding-right: 15px;\n    padding-left: 0px;\n}\n", ""]);
 
 // exports
 
@@ -61214,6 +61287,19 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-axios/dist/vue-axios.min.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vue-axios/dist/vue-axios.min.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(o){return typeof o}:function(o){return o&&"function"==typeof Symbol&&o.constructor===Symbol&&o!==Symbol.prototype?"symbol":typeof o};!function(){function o(e,t){if(!o.installed){if(o.installed=!0,!t)return void console.error("You have to install axios");e.axios=t,Object.defineProperties(e.prototype,{axios:{get:function(){return t}},$http:{get:function(){return t}}})}}"object"==( false?undefined:_typeof(exports))?module.exports=o: true?!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function(){return o}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):undefined}();
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/BtnVaidateComponent.vue?vue&type=template&id=4548371c&":
 /*!**********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/BtnVaidateComponent.vue?vue&type=template&id=4548371c& ***!
@@ -61302,10 +61388,17 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "principal" },
     [
       _c(
         "div",
-        { staticClass: "div_opt" },
+        {
+          staticClass: "div_opt",
+          style: {
+            backgroundImage:
+              "url(/images/" + _vm.back_images[_vm.level - 1] + ")"
+          }
+        },
         [
           _c("div", { staticClass: "row" }, [
             _c(
@@ -61364,7 +61457,11 @@ var render = function() {
                   _vm._l(_vm.opt, function(element) {
                     return _c(
                       "div",
-                      { key: element.name, staticClass: "elm" },
+                      {
+                        key: element.name,
+                        staticClass: "elm",
+                        attrs: { transition: "scale-transition" }
+                      },
                       [
                         _vm._v(
                           "\n                        " +
@@ -61455,6 +61552,81 @@ var render = function() {
         1
       ),
       _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c(
+          "div",
+          { staticClass: "col-6" },
+          [
+            _c(
+              "v-alert",
+              { attrs: { dense: "", text: "" } },
+              [
+                _c("span", { staticClass: "ml-10 lives_title" }, [
+                  _vm._v("VIDAS")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.lives, function(item) {
+                  return _c("span", [_vm._v(" ❤️ ")])
+                })
+              ],
+              2
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-6" },
+          [
+            _c("v-alert", { attrs: { dense: "", text: "" } }, [
+              _c("span", { staticClass: "ml-10 lives_title" }, [
+                _vm._v("NIVEL " + _vm._s(_vm.level) + " ")
+              ])
+            ])
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-progress-linear",
+        {
+          attrs: {
+            height: "15",
+            color: "#D7DF01",
+            "background-color": "#F5F6CE",
+            rounded: "",
+            striped: ""
+          },
+          model: {
+            value: _vm.progress,
+            callback: function($$v) {
+              _vm.progress = $$v
+            },
+            expression: "progress"
+          }
+        },
+        [_c("strong", [_vm._v(_vm._s(Math.ceil(_vm.progress)) + "%")])]
+      ),
+      _vm._v(" "),
+      _c(
+        "v-alert",
+        {
+          attrs: {
+            value: _vm.alert,
+            color: "#088A4B",
+            height: "37",
+            transition: "scale-transition"
+          }
+        },
+        [
+          _c("p", { staticClass: "alert_ok" }, [
+            _vm._v("\n            👍 MUY BIEN !\n        ")
+          ])
+        ]
+      ),
+      _vm._v(" "),
       _c("v-app", { attrs: { id: "inspire" } }, [
         _c(
           "div",
@@ -61463,7 +61635,7 @@ var render = function() {
             _c(
               "v-dialog",
               {
-                attrs: { width: "400" },
+                attrs: { width: "300" },
                 model: {
                   value: _vm.dialog,
                   callback: function($$v) {
@@ -61475,18 +61647,22 @@ var render = function() {
               [
                 _c(
                   "v-card",
+                  { attrs: { color: "#385F73", dark: "", center: "" } },
                   [
-                    _c("v-card-title", { staticClass: "headline" }, [
-                      _vm._v("Segura ?")
+                    _c("v-card-title", { staticClass: "red lighten-1 mb-10" }, [
+                      _vm._v("ERROR !")
                     ]),
                     _vm._v(" "),
-                    _c("v-card-text", [
-                      _c("b", [_vm._v("Vuelve a intentarlo! ")]),
+                    _c("v-card-text", { staticClass: "text-center" }, [
+                      _c("img", {
+                        attrs: {
+                          src: "/images/face_error.png",
+                          alt: "face_error",
+                          width: "170px"
+                        }
+                      }),
                       _vm._v(" "),
-                      _c("br"),
-                      _vm._v(
-                        "\n                        Let Google help apps determine\n                        location. This means sending anonymous location data\n                        to Google, even when no apps are\n                        running."
-                      )
+                      _c("br")
                     ]),
                     _vm._v(" "),
                     _c(
@@ -61497,14 +61673,18 @@ var render = function() {
                         _c(
                           "v-btn",
                           {
-                            attrs: { color: "green darken-1", text: "" },
+                            attrs: { color: "white darken-1", text: "" },
                             on: {
                               click: function($event) {
                                 _vm.dialog = false
                               }
                             }
                           },
-                          [_vm._v("OK")]
+                          [
+                            _vm._v(
+                              "VOLVER A INTENTAR!\n                        "
+                            )
+                          ]
                         )
                       ],
                       1
@@ -119323,8 +119503,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuefire__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuefire */ "./node_modules/vuefire/dist/vuefire.esm.js");
-/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! material-design-icons-iconfont/dist/material-design-icons.css */ "./node_modules/material-design-icons-iconfont/dist/material-design-icons.css");
-/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue_axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-axios */ "./node_modules/vue-axios/dist/vue-axios.min.js");
+/* harmony import */ var vue_axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! material-design-icons-iconfont/dist/material-design-icons.css */ "./node_modules/material-design-icons-iconfont/dist/material-design-icons.css");
+/* harmony import */ var material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(material_design_icons_iconfont_dist_material_design_icons_css__WEBPACK_IMPORTED_MODULE_4__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -119335,8 +119519,9 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 
 
-Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_0___default.a);
-Vue.use(vuefire__WEBPACK_IMPORTED_MODULE_1__["rtdbPlugin"]);
+
+
+Vue.use(vuetify__WEBPACK_IMPORTED_MODULE_0___default.a, vuefire__WEBPACK_IMPORTED_MODULE_1__["rtdbPlugin"], vue_axios__WEBPACK_IMPORTED_MODULE_3___default.a, axios__WEBPACK_IMPORTED_MODULE_2___default.a);
 
 /**
  * The following block of code may be used to automatically register your
@@ -119501,14 +119686,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************!*\
   !*** ./resources/js/components/DragOptComponent.vue ***!
   \******************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DragOptComponent_vue_vue_type_template_id_1ba1ae49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=template&id=1ba1ae49&scoped=true& */ "./resources/js/components/DragOptComponent.vue?vue&type=template&id=1ba1ae49&scoped=true&");
 /* harmony import */ var _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/DragOptComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _DragOptComponent_vue_vue_type_style_index_0_id_1ba1ae49_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css& */ "./resources/js/components/DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css&");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _DragOptComponent_vue_vue_type_style_index_0_id_1ba1ae49_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css& */ "./resources/js/components/DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -119540,7 +119726,7 @@ component.options.__file = "resources/js/components/DragOptComponent.vue"
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/DragOptComponent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

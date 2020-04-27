@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@mdi/font": "^5.1.45",
-        "axios": "^0.19",
+        "axios": "^0.19.2",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "jquery": "^3.2",
@@ -29,6 +29,7 @@
         "core-js": "^2.6.11",
         "firebase": "^7.14.1",
         "material-design-icons-iconfont": "^5.0.1",
+        "vue-axios": "^2.1.5",
         "vuedraggable": "^2.23.2",
         "vuefire": "^2.2.2",
         "vuetify": "^2.2.22"

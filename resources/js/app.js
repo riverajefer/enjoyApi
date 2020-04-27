@@ -10,9 +10,10 @@ window.Vue = require('vue');
 
 import Vuetify from 'vuetify';
 import { rtdbPlugin } from 'vuefire'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
-Vue.use(Vuetify);
-Vue.use(rtdbPlugin);
+Vue.use(Vuetify, rtdbPlugin, VueAxios, axios);
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 /**

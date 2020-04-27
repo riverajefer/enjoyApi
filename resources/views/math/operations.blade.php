@@ -2,10 +2,6 @@
 
 @section('content')
 <div class="container">
-
-
-    <h1>Operaciones</h1>
-
     <p>
         {{--  {{ $opt_random }}  --}}
     </p>

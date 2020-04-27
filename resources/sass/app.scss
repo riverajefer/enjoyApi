@@ -3,7 +3,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Mystery+Quest&display=swap');
 @import '~@mdi/font/css/materialdesignicons.min.css';
 
+body {
+    background: linear-gradient(-45deg, #D7DF01, #31B404, #088A85, #084B8A);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
 
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 @import '~vuetify/dist/vuetify.min.css';
 
 // Variables
@@ -11,4 +28,6 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
+h1{
+    color: $body-bg;
+}

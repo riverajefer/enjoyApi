@@ -1,6 +1,11 @@
 <template>
-    <div>
-        <div class="div_opt">
+    <div class="principal">
+        <div
+            class="div_opt"
+            :style="{
+                backgroundImage: `url(/images/${back_images[level - 1]})`
+            }"
+        >
             <div class="row">
                 <div class="col-1 col-sm-1 offset-md-3">
                     <draggable
@@ -21,7 +26,6 @@
                     </draggable>
                 </div>
                 <div class="col-1">
-                    <!-- <img :src="'/images/plus.png'" :alt="'Plus'" width="70px" /> -->
                     <div class="elm plus">
                         +
                     </div>
@@ -38,6 +42,7 @@
                     >
                         <div
                             class="elm"
+                            transition="scale-transition"
                             v-for="element in opt"
                             :key="element.name"
                         >
@@ -92,26 +97,62 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-6">
+                <v-alert dense text>
+                    <span class="ml-10 lives_title">VIDAS</span>
+                    <span v-for="item in lives"> ❤️ </span>
+                </v-alert>
+            </div>
+            <div class="col-6">
+                <v-alert dense text>
+                    <span class="ml-10 lives_title">NIVEL {{ level }} </span>
+                </v-alert>
+            </div>
+        </div>
+        <v-progress-linear
+            v-model="progress"
+            height="15"
+            color="#D7DF01"
+            background-color="#F5F6CE"
+            rounded
+            striped
+        >
+            <strong>{{ Math.ceil(progress) }}%</strong>
+        </v-progress-linear>
+        <v-alert
+            :value="alert"
+            color="#088A4B"
+            height="37"
+            transition="scale-transition"
+        >
+            <p class="alert_ok">
+                👍 MUY BIEN !
+            </p>
+        </v-alert>
         <v-app id="inspire">
             <div class="text-center">
-                <v-dialog v-model="dialog" width="400">
-                    <v-card>
-                        <v-card-title class="headline">Segura ?</v-card-title>
-                        <v-card-text>
-                            <b>Vuelve a intentarlo! </b>  <br>
-                            Let Google help apps determine
-                            location. This means sending anonymous location data
-                            to Google, even when no apps are
-                            running.</v-card-text
+                <v-dialog v-model="dialog" width="300">
+                    <v-card color="#385F73" dark center>
+                        <v-card-title class="red lighten-1 mb-10"
+                            >ERROR !</v-card-title
                         >
+                        <v-card-text class="text-center">
+                            <img
+                                :src="'/images/face_error.png'"
+                                :alt="'face_error'"
+                                width="170px"
+                            />
+                            <br />
+                        </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn
-                                color="green darken-1"
+                                color="white darken-1"
                                 text
                                 @click="dialog = false"
-                                >OK</v-btn
-                            >
+                                >VOLVER A INTENTAR!
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -132,31 +173,24 @@ export default {
         draggable
     },
     mounted() {
-        this.opt = JSON.parse(this.operations);
-        let arr = [];
-        this.value1 = this.opt[0].val1;
-        this.value2 = this.opt[0].val2;
-        const result = this.value1 + this.value2;
-
-        while (arr.length < 5) {
-            var r = Math.floor(Math.random() * 20) + 1;
-            if (arr.indexOf(r) === -1) arr.push(r);
-        }
-        this.list1 = arr;
-
-        this.list1.indexOf(result) === -1
-            ? (this.list1.pop(), this.list1.push(result))
-            : console.log("This item already exists");
-        this.list1.sort(() => Math.random() - 0.5);
+        const opt = JSON.parse(this.operations);
+        this.newOpt(opt);
     },
 
     data() {
         return {
+            progress: 0,
+            quantity_opt: 2,
+            count_opt_response: 0,
             opt: this.opt,
             list1: [],
             resul: [],
             value1: 0,
             value2: 0,
+            level: 1,
+            levels: ["easy", "medium", "hard"],
+            lives: [1, 2, 3, 4, 5],
+            alert: false,
             response_user: 0,
             dialog: false,
             colors_numbers: [
@@ -165,29 +199,41 @@ export default {
                 "#FFBF00",
                 "#045FB4",
                 "#FF8000"
-            ]
+            ],
+            back_images: ["fondo1.jpg", "fondo2.jpg", "fondo3.jpg"]
         };
     },
 
     created: function() {},
 
     methods: {
+        newOpt: function(operation) {
+            this.opt = operation;
+            let arr = [];
+            this.value1 = this.opt[0].val1;
+            this.value2 = this.opt[0].val2;
+            const result = this.value1 + this.value2;
+
+            while (arr.length < 5) {
+                var r = Math.floor(Math.random() * 20) + 1;
+                if (arr.indexOf(r) === -1) arr.push(r);
+            }
+            this.list1 = arr;
+
+            this.list1.indexOf(result) === -1
+                ? (this.list1.pop(), this.list1.push(result))
+                : console.log("This item already exists");
+            this.list1.sort(() => Math.random() - 0.5);
+        },
+
         speakResponse: function() {
             console.log("speakResponse ");
             this.speak("Muy bien !");
             this.speak(" ");
 
-            const text = `${this.value1} + ${this.value2} = ${(this.value1 + this.value2)}`;
+            const text = `${this.value1} + ${this.value2} = ${this.value1 +
+                this.value2}`;
             this.speak(text);
-            /* this.speak(this.value1);
-            this.speak("+");
-            this.speak(this.value2);
-            this.speak("= a");
-            this.speak(this.value1 + this.value2);
-
-            Cuando inicia (Start) a decir cada palabra se aumenta el tamaño del numero
-            cuando termina (End) vuelve al original
-            */
         },
         speak: function(msg) {
             var _msg = new SpeechSynthesisUtterance(msg);
@@ -212,12 +258,37 @@ export default {
                 if (this.response_user !== resp_correct) {
                     this.resul.pop();
                     this.dialog = true;
+                    this.lives.pop();
                     return false;
                 } else {
                     console.log("Respuesta correcta !");
+                    this.alert = true;
                     this.speakResponse();
+                    this.count_opt_response++;
+                    this.progress =
+                        (this.count_opt_response * 100) / this.quantity_opt;
+
+                    setTimeout(() => {
+                        if (this.progress >= 100) {
+                            this.level++;
+                            this.progress = 0;
+                            this.count_opt_response = 0;
+                        }
+
+                        this.getNewOpt();
+                    }, 4500);
                 }
             }
+        },
+
+        getNewOpt: function() {
+            let body = { level: this.levels[this.level - 1] };
+            axios.post("new_opt", body).then(response => {
+                console.log(response.data);
+                this.alert = false;
+                this.resul = [];
+                this.newOpt(response.data);
+            });
         },
 
         checkMove(evt) {}
@@ -226,21 +297,26 @@ export default {
 /*
 TODO:
 pendiente
-* voces sync con numeros
-* Estilos Dialog
-* Respuesta correcta nueva operacion
-* Intentos
+* Vidas
 * Vidas en cero, envío evento a firebase
+* Cuando complete los 3 nivles  Ganador!
+
 */
 </script>
 
-
 <style scoped>
-.div_opt {
-    border: 3px solid #df01a5;
-    border-radius: 20px;
-    background-color: #f2f2f2;
+.theme--light.v-application {
+    background: none !important;
+}
+.principal {
     width: 80%;
+    margin: 0 auto;
+}
+.div_opt {
+    background-image: url("/images/fondo1.jpg");
+    border: 3px solid #aeb404;
+    background-size: 100%;
+    border-radius: 20px;
     margin: 0 auto;
     padding: 30px;
 }
@@ -266,6 +342,7 @@ pendiente
     padding-top: 0px;
     font-family: "Mystery Quest", cursive;
     color: #8904b1;
+    text-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;
 }
 .plus {
     font-size: 80px;
@@ -276,9 +353,10 @@ pendiente
     margin: 5px 15px;
     width: 80px;
     height: 80px;
-    font-size: 61px;
+    font-size: 70px;
     font-family: "Mystery Quest", cursive;
     color: #8904b1;
+    text-shadow: 2px 2px 0 #bcbcbc, 4px 4px 0 #9c9c9c;
     font-weight: bold;
     cursor: move;
     border: none;
@@ -286,5 +364,17 @@ pendiente
 }
 .list-group {
     display: inline !important;
+}
+.alert_ok {
+    color: #f2f2f2;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 0px 0px;
+}
+.lives_title {
+    color: #f2f2f2;
+    font-weight: bold;
+    padding-right: 15px;
+    padding-left: 0px;
 }
 </style>
