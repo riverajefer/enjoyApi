@@ -1,5 +1,13 @@
 <template>
     <div class="principal">
+        <v-app style="height:60px">
+            <v-switch
+                v-model="sound"
+                on-icon="fas fa-ban"
+                class="ma-4"
+                label="Sonido"
+            ></v-switch>
+        </v-app>
         <div
             class="div_opt"
             :style="{
@@ -77,12 +85,10 @@
             <div class="row">
                 <div class="col-9 offset-md-2">
                     <draggable
-                        :move="checkMove"
                         class="dragArea list-group"
                         :list="list1"
                         :group="{ name: 'people', pull: 'clone', put: false }"
                         @change="log"
-                        @end="onEnd"
                     >
                         <v-chip
                             class="ma-2 numbers_opt"
@@ -134,13 +140,14 @@
             <div class="text-center">
                 <v-dialog v-model="dialog" width="300">
                     <v-card color="#385F73" dark center>
-                        <v-card-title class="red lighten-1 mb-10"
-                            >ERROR !</v-card-title
-                        >
+                        <v-card-title class="red lighten-1 mb-10">{{
+                            dialog_title
+                        }}</v-card-title>
                         <v-card-text class="text-center">
+                            <p>{{ dialog_text }}</p>
                             <img
-                                :src="'/images/face_error.png'"
-                                :alt="'face_error'"
+                                :src="`/images/${dialog_image}`"
+                                :alt="'face'"
                                 width="170px"
                             />
                             <br />
@@ -150,8 +157,10 @@
                             <v-btn
                                 color="white darken-1"
                                 text
-                                @click="dialog = false"
-                                >VOLVER A INTENTAR!
+                                @click="
+                                    winner ? onPlayAgain() : (dialog = false)
+                                "
+                                >{{ dialog_btn_text }}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -163,7 +172,6 @@
 
 <script>
 import draggable from "vuedraggable";
-// it :smile😂 💪
 
 export default {
     props: ["operations"],
@@ -182,14 +190,20 @@ export default {
             progress: 0,
             quantity_opt: 2,
             count_opt_response: 0,
+            dialog_title: "",
+            dialog_image: "",
+            dialog_btn_text: "",
+            dialog_text: "",
+            sound: true,
             opt: this.opt,
+            winner: false,
             list1: [],
             resul: [],
             value1: 0,
             value2: 0,
             level: 1,
             levels: ["easy", "medium", "hard"],
-            lives: [1, 2, 3, 4, 5],
+            lives: [1, 2, 3],
             alert: false,
             response_user: 0,
             dialog: false,
@@ -203,8 +217,6 @@ export default {
             back_images: ["fondo1.jpg", "fondo2.jpg", "fondo3.jpg"]
         };
     },
-
-    created: function() {},
 
     methods: {
         newOpt: function(operation) {
@@ -227,7 +239,6 @@ export default {
         },
 
         speakResponse: function() {
-            console.log("speakResponse ");
             this.speak("Muy bien !");
             this.speak(" ");
 
@@ -239,15 +250,11 @@ export default {
             var _msg = new SpeechSynthesisUtterance(msg);
             _msg.rate = 1;
             window.speechSynthesis.speak(_msg);
-            _msg.onpause = function() {
-                console.log("pause de hablar");
-            };
             _msg.onend = function() {
                 console.log("termino de hablar");
             };
         },
 
-        onEnd: function(evt) {},
         log: function(evt) {
             window.console.log(evt);
 
@@ -256,28 +263,37 @@ export default {
                 const resp_correct = this.value1 + this.value2;
 
                 if (this.response_user !== resp_correct) {
-                    this.resul.pop();
-                    this.dialog = true;
-                    this.lives.pop();
+                    this.incorrectAnswer();
                     return false;
                 } else {
                     console.log("Respuesta correcta !");
-                    this.alert = true;
-                    this.speakResponse();
-                    this.count_opt_response++;
-                    this.progress =
-                        (this.count_opt_response * 100) / this.quantity_opt;
-
-                    setTimeout(() => {
-                        if (this.progress >= 100) {
-                            this.level++;
-                            this.progress = 0;
-                            this.count_opt_response = 0;
-                        }
-
-                        this.getNewOpt();
-                    }, 4500);
+                    this.correctAnswer();
                 }
+            }
+        },
+        incorrectAnswer: function() {
+            this.resul.pop();
+            this.dialog = true;
+            this.lives.pop();
+            this.dialog_title = "ERROR!";
+            this.dialog_btn_text = "VOLVER A INTENTAR!";
+            this.dialog_image = "face_error.png";
+        },
+        correctAnswer: function() {
+            this.alert = true;
+            this.sound ? this.speakResponse() : "";
+            this.count_opt_response++;
+            this.progress = (this.count_opt_response * 100) / this.quantity_opt;
+            this.isWinner();
+            if (!this.winner) {
+                setTimeout(() => {
+                    if (this.progress >= 100) {
+                        this.level++;
+                        this.progress = 0;
+                        this.count_opt_response = 0;
+                    }
+                    this.getNewOpt();
+                }, 4500);
             }
         },
 
@@ -290,8 +306,26 @@ export default {
                 this.newOpt(response.data);
             });
         },
-
-        checkMove(evt) {}
+        isWinner: function() {
+            console.log("level", this.level, "progress", this.progress);
+            if (this.level === 3 && this.progress === 100) {
+                console.log("Ganaador..");
+                this.winner = true;
+                this.dialog = true;
+                this.dialog_title = "HAS GANADO!";
+                this.dialog_btn_text = "VOLVER A JUGAR!";
+                this.dialog_image = "success.png";
+            }
+        },
+        onPlayAgain: function() {
+            this.winner = false;
+            this.dialog = false;
+            this.progress = 0;
+            this.level = 1;
+            this.count_opt_response = 0;
+            this.lives = [1, 2, 3];
+            this.getNewOpt();
+        }
     }
 };
 /*
@@ -300,7 +334,7 @@ pendiente
 * Vidas
 * Vidas en cero, envío evento a firebase
 * Cuando complete los 3 nivles  Ganador!
-
+* Cuando cambie de nivel el array ran debe aumentar los numeros
 */
 </script>
 

@@ -20515,7 +20515,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
- // it :smile😂 💪
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["operations"],
@@ -20533,14 +20541,20 @@ __webpack_require__.r(__webpack_exports__);
       progress: 0,
       quantity_opt: 2,
       count_opt_response: 0,
+      dialog_title: "",
+      dialog_image: "",
+      dialog_btn_text: "",
+      dialog_text: "",
+      sound: true,
       opt: this.opt,
+      winner: false,
       list1: [],
       resul: [],
       value1: 0,
       value2: 0,
       level: 1,
       levels: ["easy", "medium", "hard"],
-      lives: [1, 2, 3, 4, 5],
+      lives: [1, 2, 3],
       alert: false,
       response_user: 0,
       dialog: false,
@@ -20548,7 +20562,6 @@ __webpack_require__.r(__webpack_exports__);
       back_images: ["fondo1.jpg", "fondo2.jpg", "fondo3.jpg"]
     };
   },
-  created: function created() {},
   methods: {
     newOpt: function newOpt(operation) {
       this.opt = operation;
@@ -20569,7 +20582,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     speakResponse: function speakResponse() {
-      console.log("speakResponse ");
       this.speak("Muy bien !");
       this.speak(" ");
       var text = "".concat(this.value1, " + ").concat(this.value2, " = ").concat(this.value1 + this.value2);
@@ -20581,18 +20593,11 @@ __webpack_require__.r(__webpack_exports__);
       _msg.rate = 1;
       window.speechSynthesis.speak(_msg);
 
-      _msg.onpause = function () {
-        console.log("pause de hablar");
-      };
-
       _msg.onend = function () {
         console.log("termino de hablar");
       };
     },
-    onEnd: function onEnd(evt) {},
     log: function log(evt) {
-      var _this = this;
-
       window.console.log(evt);
 
       if (evt.added !== undefined) {
@@ -20600,26 +20605,41 @@ __webpack_require__.r(__webpack_exports__);
         var resp_correct = this.value1 + this.value2;
 
         if (this.response_user !== resp_correct) {
-          this.resul.pop();
-          this.dialog = true;
-          this.lives.pop();
+          this.incorrectAnswer();
           return false;
         } else {
           console.log("Respuesta correcta !");
-          this.alert = true;
-          this.speakResponse();
-          this.count_opt_response++;
-          this.progress = this.count_opt_response * 100 / this.quantity_opt;
-          setTimeout(function () {
-            if (_this.progress >= 100) {
-              _this.level++;
-              _this.progress = 0;
-              _this.count_opt_response = 0;
-            }
-
-            _this.getNewOpt();
-          }, 4500);
+          this.correctAnswer();
         }
+      }
+    },
+    incorrectAnswer: function incorrectAnswer() {
+      this.resul.pop();
+      this.dialog = true;
+      this.lives.pop();
+      this.dialog_title = "ERROR!";
+      this.dialog_btn_text = "VOLVER A INTENTAR!";
+      this.dialog_image = "face_error.png";
+    },
+    correctAnswer: function correctAnswer() {
+      var _this = this;
+
+      this.alert = true;
+      this.sound ? this.speakResponse() : "";
+      this.count_opt_response++;
+      this.progress = this.count_opt_response * 100 / this.quantity_opt;
+      this.isWinner();
+
+      if (!this.winner) {
+        setTimeout(function () {
+          if (_this.progress >= 100) {
+            _this.level++;
+            _this.progress = 0;
+            _this.count_opt_response = 0;
+          }
+
+          _this.getNewOpt();
+        }, 4500);
       }
     },
     getNewOpt: function getNewOpt() {
@@ -20636,7 +20656,27 @@ __webpack_require__.r(__webpack_exports__);
         _this2.newOpt(response.data);
       });
     },
-    checkMove: function checkMove(evt) {}
+    isWinner: function isWinner() {
+      console.log("level", this.level, "progress", this.progress);
+
+      if (this.level === 3 && this.progress === 100) {
+        console.log("Ganaador..");
+        this.winner = true;
+        this.dialog = true;
+        this.dialog_title = "HAS GANADO!";
+        this.dialog_btn_text = "VOLVER A JUGAR!";
+        this.dialog_image = "success.png";
+      }
+    },
+    onPlayAgain: function onPlayAgain() {
+      this.winner = false;
+      this.dialog = false;
+      this.progress = 0;
+      this.level = 1;
+      this.count_opt_response = 0;
+      this.lives = [1, 2, 3];
+      this.getNewOpt();
+    }
   }
 });
 /*
@@ -20645,7 +20685,7 @@ pendiente
 * Vidas
 * Vidas en cero, envío evento a firebase
 * Cuando complete los 3 nivles  Ganador!
-
+* Cuando cambie de nivel el array ran debe aumentar los numeros
 */
 
 /***/ }),
@@ -61391,6 +61431,25 @@ var render = function() {
     { staticClass: "principal" },
     [
       _c(
+        "v-app",
+        { staticStyle: { height: "60px" } },
+        [
+          _c("v-switch", {
+            staticClass: "ma-4",
+            attrs: { "on-icon": "fas fa-ban", label: "Sonido" },
+            model: {
+              value: _vm.sound,
+              callback: function($$v) {
+                _vm.sound = $$v
+              },
+              expression: "sound"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
         "div",
         {
           staticClass: "div_opt",
@@ -61518,11 +61577,10 @@ var render = function() {
                   {
                     staticClass: "dragArea list-group",
                     attrs: {
-                      move: _vm.checkMove,
                       list: _vm.list1,
                       group: { name: "people", pull: "clone", put: false }
                     },
-                    on: { change: _vm.log, end: _vm.onEnd }
+                    on: { change: _vm.log }
                   },
                   _vm._l(_vm.list1, function(element, i) {
                     return _c(
@@ -61650,14 +61708,16 @@ var render = function() {
                   { attrs: { color: "#385F73", dark: "", center: "" } },
                   [
                     _c("v-card-title", { staticClass: "red lighten-1 mb-10" }, [
-                      _vm._v("ERROR !")
+                      _vm._v(_vm._s(_vm.dialog_title))
                     ]),
                     _vm._v(" "),
                     _c("v-card-text", { staticClass: "text-center" }, [
+                      _c("p", [_vm._v(_vm._s(_vm.dialog_text))]),
+                      _vm._v(" "),
                       _c("img", {
                         attrs: {
-                          src: "/images/face_error.png",
-                          alt: "face_error",
+                          src: "/images/" + _vm.dialog_image,
+                          alt: "face",
                           width: "170px"
                         }
                       }),
@@ -61676,13 +61736,16 @@ var render = function() {
                             attrs: { color: "white darken-1", text: "" },
                             on: {
                               click: function($event) {
-                                _vm.dialog = false
+                                _vm.winner
+                                  ? _vm.onPlayAgain()
+                                  : (_vm.dialog = false)
                               }
                             }
                           },
                           [
                             _vm._v(
-                              "VOLVER A INTENTAR!\n                        "
+                              _vm._s(_vm.dialog_btn_text) +
+                                "\n                        "
                             )
                           ]
                         )
@@ -119686,15 +119749,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************!*\
   !*** ./resources/js/components/DragOptComponent.vue ***!
   \******************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DragOptComponent_vue_vue_type_template_id_1ba1ae49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=template&id=1ba1ae49&scoped=true& */ "./resources/js/components/DragOptComponent.vue?vue&type=template&id=1ba1ae49&scoped=true&");
 /* harmony import */ var _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/DragOptComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _DragOptComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _DragOptComponent_vue_vue_type_style_index_0_id_1ba1ae49_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css& */ "./resources/js/components/DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _DragOptComponent_vue_vue_type_style_index_0_id_1ba1ae49_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css& */ "./resources/js/components/DragOptComponent.vue?vue&type=style&index=0&id=1ba1ae49&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -119726,7 +119788,7 @@ component.options.__file = "resources/js/components/DragOptComponent.vue"
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/DragOptComponent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
