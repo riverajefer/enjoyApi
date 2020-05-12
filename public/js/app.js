@@ -20352,6 +20352,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _db__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../db */ "./resources/js/db.js");
 //
 //
 //
@@ -20524,6 +20525,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["operations"],
@@ -20545,7 +20549,7 @@ __webpack_require__.r(__webpack_exports__);
       dialog_image: "",
       dialog_btn_text: "",
       dialog_text: "",
-      sound: true,
+      sound: false,
       opt: this.opt,
       winner: false,
       list1: [],
@@ -20553,6 +20557,7 @@ __webpack_require__.r(__webpack_exports__);
       value1: 0,
       value2: 0,
       level: 1,
+      level_factor_rand: [20, 40, 60],
       levels: ["easy", "medium", "hard"],
       lives: [1, 2, 3],
       alert: false,
@@ -20571,7 +20576,7 @@ __webpack_require__.r(__webpack_exports__);
       var result = this.value1 + this.value2;
 
       while (arr.length < 5) {
-        var r = Math.floor(Math.random() * 20) + 1;
+        var r = Math.floor(Math.random() * this.level_factor_rand[this.level - 1]) + 1;
         if (arr.indexOf(r) === -1) arr.push(r);
       }
 
@@ -20620,6 +20625,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialog_title = "ERROR!";
       this.dialog_btn_text = "VOLVER A INTENTAR!";
       this.dialog_image = "face_error.png";
+      this.gameOver();
     },
     correctAnswer: function correctAnswer() {
       var _this = this;
@@ -20668,6 +20674,16 @@ __webpack_require__.r(__webpack_exports__);
         this.dialog_image = "success.png";
       }
     },
+    gameOver: function gameOver() {
+      console.log("lives", this.lives.length);
+
+      if (this.lives.length === 0) {
+        this.dialog_title = "PERDISTE!";
+        this.dialog_btn_text = "VOLVER A JUGAR!";
+        this.dialog_image = "game_over.png";
+        this.onChangeStatusFirebase(true);
+      }
+    },
     onPlayAgain: function onPlayAgain() {
       this.winner = false;
       this.dialog = false;
@@ -20676,16 +20692,18 @@ __webpack_require__.r(__webpack_exports__);
       this.count_opt_response = 0;
       this.lives = [1, 2, 3];
       this.getNewOpt();
+      this.onChangeStatusFirebase(false);
+    },
+    onChangeStatusFirebase: function onChangeStatusFirebase(val) {
+      console.log('onChangeStatusFirebase');
+      _db__WEBPACK_IMPORTED_MODULE_1__["db"].ref("app").child("resul_status").set(val);
     }
   }
 });
 /*
 TODO:
 pendiente
-* Vidas
 * Vidas en cero, envío evento a firebase
-* Cuando complete los 3 nivles  Ganador!
-* Cuando cambie de nivel el array ran debe aumentar los numeros
 */
 
 /***/ }),
@@ -61736,7 +61754,7 @@ var render = function() {
                             attrs: { color: "white darken-1", text: "" },
                             on: {
                               click: function($event) {
-                                _vm.winner
+                                _vm.winner || !_vm.lives.length
                                   ? _vm.onPlayAgain()
                                   : (_vm.dialog = false)
                               }

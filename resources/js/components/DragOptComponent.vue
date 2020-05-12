@@ -158,7 +158,9 @@
                                 color="white darken-1"
                                 text
                                 @click="
-                                    winner ? onPlayAgain() : (dialog = false)
+                                    winner || !lives.length
+                                        ? onPlayAgain()
+                                        : (dialog = false)
                                 "
                                 >{{ dialog_btn_text }}
                             </v-btn>
@@ -172,6 +174,7 @@
 
 <script>
 import draggable from "vuedraggable";
+import { db } from "../db";
 
 export default {
     props: ["operations"],
@@ -194,7 +197,7 @@ export default {
             dialog_image: "",
             dialog_btn_text: "",
             dialog_text: "",
-            sound: true,
+            sound: false,
             opt: this.opt,
             winner: false,
             list1: [],
@@ -202,6 +205,7 @@ export default {
             value1: 0,
             value2: 0,
             level: 1,
+            level_factor_rand: [20, 40, 60],
             levels: ["easy", "medium", "hard"],
             lives: [1, 2, 3],
             alert: false,
@@ -227,7 +231,10 @@ export default {
             const result = this.value1 + this.value2;
 
             while (arr.length < 5) {
-                var r = Math.floor(Math.random() * 20) + 1;
+                var r =
+                    Math.floor(
+                        Math.random() * this.level_factor_rand[this.level - 1]
+                    ) + 1;
                 if (arr.indexOf(r) === -1) arr.push(r);
             }
             this.list1 = arr;
@@ -278,6 +285,7 @@ export default {
             this.dialog_title = "ERROR!";
             this.dialog_btn_text = "VOLVER A INTENTAR!";
             this.dialog_image = "face_error.png";
+            this.gameOver();
         },
         correctAnswer: function() {
             this.alert = true;
@@ -317,6 +325,15 @@ export default {
                 this.dialog_image = "success.png";
             }
         },
+        gameOver: function() {
+            console.log("lives", this.lives.length);
+            if (this.lives.length === 0) {
+                this.dialog_title = "PERDISTE!";
+                this.dialog_btn_text = "VOLVER A JUGAR!";
+                this.dialog_image = "game_over.png";
+                this.onChangeStatusFirebase(true);
+            }
+        },
         onPlayAgain: function() {
             this.winner = false;
             this.dialog = false;
@@ -325,16 +342,21 @@ export default {
             this.count_opt_response = 0;
             this.lives = [1, 2, 3];
             this.getNewOpt();
+            this.onChangeStatusFirebase(false);
+        },
+        onChangeStatusFirebase: function(val) {
+            console.log('onChangeStatusFirebase');
+
+            db.ref("app")
+                .child("resul_status")
+                .set(val);
         }
     }
 };
 /*
 TODO:
 pendiente
-* Vidas
 * Vidas en cero, envío evento a firebase
-* Cuando complete los 3 nivles  Ganador!
-* Cuando cambie de nivel el array ran debe aumentar los numeros
 */
 </script>
 
