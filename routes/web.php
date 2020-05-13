@@ -24,3 +24,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('add','Math\TypeOperationController@add');
 Route::resource('operations', 'Math\OperationController');
 Route::post('new_opt', 'Math\OperationController@newOpt');
+Route::get('roulette', 'Math\OperationController@roulette');
+

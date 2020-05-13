@@ -20,6 +20,10 @@ class OperationController extends Controller
         return view('math/operations', ['opt_random' => $opt_random]);
     }
 
+    public function roulette() {
+        return view('math/roulette');
+    }
+
     /**
      * Display a listing of the resource.
      *

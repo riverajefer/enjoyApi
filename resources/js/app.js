@@ -31,6 +31,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('nav-bar-component', require('./components/NavBarComponent.vue').default);
 Vue.component('btn-validate-component', require('./components/BtnVaidateComponent.vue').default);
 Vue.component('drag-opt-component', require('./components/DragOptComponent.vue').default);
+Vue.component('roulette-component', require('./components/RouletteComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
