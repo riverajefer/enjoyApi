@@ -20906,6 +20906,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -20919,33 +20921,82 @@ __webpack_require__.r(__webpack_exports__);
         name: "Dos",
         id: 2
       }, {
-        image: "coin.png",
+        image: "mshroom.png",
         name: "tres",
         id: 3
       }, {
-        image: "chomp.png",
-        name: "Cuatro",
+        image: "pastel.jpg",
+        name: "cuatro",
         id: 4
       }, {
-        image: "coin.png",
+        image: "pastel.jpg",
+        name: "cuatro",
+        id: 4
+      }, {
+        image: "random.png",
         name: "Cinco",
         id: 5
       }, {
-        image: "coin.png",
+        image: "flower.png",
         name: "Seis",
         id: 6
+      }, {
+        image: "star.png",
+        name: "Siete",
+        id: 7
+      }, {
+        image: "pastel.jpg",
+        name: "cuatro",
+        id: 4
       }],
       item_current: Object
     };
   },
   created: function created() {
-    this.item_current = this.items[0];
+    this.item_current = this.items[3];
   },
   methods: {
     onStartRoulette: function onStartRoulette() {
-      console.log("items: ", this.items);
+      var _this = this;
+
+      this.onChangeStatusFirebase(false);
       var randomItem = this.items[Math.floor(Math.random() * this.items.length)];
-      console.log("start Roulette: ", randomItem);
+      var time = 0;
+      this.intervalid1 = setInterval(function () {
+        time++;
+        console.log("time: ", time);
+
+        if (_this.items.length == time) {
+          time = 0;
+        } else {
+          _this.item_current = _this.items[time];
+        }
+      }, 100);
+      setTimeout(function () {
+        clearInterval(_this.intervalid1);
+        console.log("randomItem Roulette: ", randomItem);
+        _this.item_current = randomItem;
+
+        if (_this.item_current.id == 4) {
+          _this.onChangeStatusFirebase(true);
+
+          setTimeout(function () {
+            console.log("Perdio y su pastelazo le pegó");
+            var audio = new Audio("/sounds/alarma.wav");
+            audio.play();
+          }, 1000);
+        }
+
+        var audio = new Audio("/sounds/bee.wav");
+        audio.play();
+      }, 2500); // set time out clear interval
+      // time rand margen 7000 - 10000+
+
+      this.item_current = randomItem;
+    },
+    onChangeStatusFirebase: function onChangeStatusFirebase(val) {
+      console.log("onChangeStatusFirebase");
+      _db__WEBPACK_IMPORTED_MODULE_0__["db"].ref("app").child("resul_status").set(val);
     }
   }
 });
@@ -62076,14 +62127,18 @@ var render = function() {
       "div",
       { staticClass: "text-center" },
       [
-        _c("div", { staticClass: "change mb-10" }, [
+        _c("div", { staticClass: "change mb-10 mt-20" }, [
           _c("img", {
             attrs: {
               src: "/images/roulette/" + _vm.item_current.image,
               alt: "face",
               width: "170px"
             }
-          })
+          }),
+          _vm._v(" "),
+          _c("p", { staticClass: "mt-10 bold" }, [
+            _vm._v(_vm._s(_vm.item_current.name))
+          ])
         ]),
         _vm._v(" "),
         _c(
@@ -120168,15 +120223,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*******************************************************!*\
   !*** ./resources/js/components/RouletteComponent.vue ***!
   \*******************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _RouletteComponent_vue_vue_type_template_id_4d977d0e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RouletteComponent.vue?vue&type=template&id=4d977d0e& */ "./resources/js/components/RouletteComponent.vue?vue&type=template&id=4d977d0e&");
 /* harmony import */ var _RouletteComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RouletteComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/RouletteComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _RouletteComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _RouletteComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _RouletteComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RouletteComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/RouletteComponent.vue?vue&type=style&index=0&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _RouletteComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RouletteComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/RouletteComponent.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -120208,7 +120262,7 @@ component.options.__file = "resources/js/components/RouletteComponent.vue"
 /*!********************************************************************************!*\
   !*** ./resources/js/components/RouletteComponent.vue?vue&type=script&lang=js& ***!
   \********************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
